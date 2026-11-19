@@ -87,8 +87,7 @@ legacy-server-breach-investigation/
 ## Lab note
 
 This investigation was performed entirely inside an isolated virtual lab
-using intentionally vulnerable training VMs provided as part of the Per
-Scholas curriculum. No production systems, real organizations, or
+using intentionally vulnerable training VMs. No production systems, real organizations, or
 real-world targets were involved. The lab network was later rebuilt on an
 isolated virtual network (from an initial bridged configuration) to
 properly segment it from the host network — a correction made and
