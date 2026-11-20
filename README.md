@@ -258,4 +258,4 @@ configuration briefly bridged the lab onto the host's own network.
 
 ## Contact
 
-Kristopher Neumann — www.linkedin.com/in/krisneumann — krisgneumann@gmail.com
+Kristopher Neumann — www.linkedin.com/in/krisneumann
