@@ -1,0 +1,18 @@
+ 21:35:25 up  4:40,  2 users,  load average: 0.00, 0.01, 0.00
+USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT
+sysadmin tty1     -                16:55   15:06m  0.38s  0.33s -bash
+root     pts/0    :0.0             16:55    4:40   0.02s  0.02s -bash
+sysadmin tty1                          Tue Nov  3 16:55   still logged in   
+sysadmin tty1                          Tue Nov  3 16:55 - 16:55  (00:00)    
+root     pts/0        :0.0             Tue Nov  3 16:55   still logged in   
+reboot   system boot  2.6.24-16-server Tue Nov  3 16:55 - 21:35  (04:40)    
+sysadmin tty1                          Tue Nov  3 16:21 - down   (00:28)    
+sysadmin tty1                          Tue Nov  3 16:21 - 16:21  (00:00)    
+root     pts/0        :0.0             Tue Nov  3 16:21 - down   (00:29)    
+reboot   system boot  2.6.24-16-server Tue Nov  3 16:21 - 16:50  (00:29)    
+sysadmin tty1                          Tue Nov  3 15:27 - crash  (00:53)    
+sysadmin tty1                          Tue Nov  3 15:27 - 15:27  (00:00)    
+root     pts/0        :0.0             Tue Nov  3 15:27 - crash  (00:53)    
+reboot   system boot  2.6.24-16-server Tue Nov  3 15:27 - 16:50  (01:23)    
+
+wtmp begins Tue Nov  3 15:27:31 2026
