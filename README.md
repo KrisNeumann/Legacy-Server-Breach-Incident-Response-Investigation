@@ -95,4 +95,4 @@ configuration briefly bridged the lab onto the host's own network.
 
 ## Contact
 
-Kristopher Neumann — [LinkedIn] · [email]
+Kristopher Neumann — www.linkedin.com/in/krisneumann — krisgneumann@gmail.com
