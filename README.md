@@ -22,8 +22,7 @@ I spent several years in technical recruiting, evaluating engineers and
 learning what strong technical work actually looks like, before moving
 into hands-on security work through a structured cybersecurity training
 program. This project is where that transition shows up directly: the
-investigation itself, and the discipline of verifying every claim rather
-than trusting it on its face.
+investigation itself, and the discipline of verifying every claim.
 
 ## The engagement
 
