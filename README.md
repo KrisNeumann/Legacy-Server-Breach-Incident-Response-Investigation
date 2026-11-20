@@ -22,7 +22,8 @@ I spent several years in technical recruiting, evaluating engineers and
 learning what strong technical work actually looks like, before moving
 into hands-on security work through a structured cybersecurity training
 program. This project is where that transition shows up directly: the
-investigation itself, and the discipline of verifying every claim.
+investigation itself, and the discipline of verifying every claim rather
+than trusting it on its face.
 
 ## The engagement
 
@@ -163,11 +164,11 @@ per-finding patch.
 
 **Vulnerability matrix** (every finding, CVE/CVSS, and the control gap it maps to):
 
-<img src="evidence/13_Vulnerability_Matrix_Summary.png" width="820" alt="Vulnerability matrix">
+![Vulnerability matrix](evidence/13_Vulnerability_Matrix_Summary.png)
 
 **Risk register** (likelihood × impact, owner, treatment, residual risk):
 
-<img src="evidence/14_Risk_Register_Summary.png" width="820" alt="Risk register">
+![Risk register](evidence/14_Risk_Register_Summary.png)
 
 Full writeup: [`docs/Section_5_Post_Incident_Review.pdf`](docs/Section_5_Post_Incident_Review.pdf).
 
