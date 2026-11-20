@@ -1,42 +1,43 @@
-# The Legacy Server Breach: Incident Response Investigation
+# Incident Response Investigation: The Legacy Server Breach
 
 **Author:** Kristopher Neumann
 
-A full incident-response investigation of a deliberately vulnerable legacy
-Ubuntu server, run end-to-end through the five phases of the incident
-response lifecycle: **Prepare → Detect & Analyze → Contain → Eradicate &
-Recover → Report**. Every technical finding was verified by hand against
-authoritative sources, in line with a "trust but verify" approach to
-AI-assisted analysis described below.
+A structured incident-response investigation of a deliberately vulnerable
+legacy Ubuntu server, conducted end-to-end in an isolated virtual lab
+across four phases of the incident response lifecycle: **Preparation →
+Detection & Analysis → Containment → Eradication & Recovery**. Every
+technical finding was verified against authoritative sources before being
+treated as fact, including findings sourced from AI-assisted research.
 
 ## Why this project
 
 I spent several years in technical recruiting, evaluating engineers and
-understanding what strong technical work actually looks like, before
-completing Per Scholas's Cybersecurity Analyst with AI Tools program to
-move into hands-on security work. This project is where that transition
-shows up directly: the investigation itself, and the discipline of
-verifying AI output rather than trusting it.
+learning what strong technical work actually looks like, before moving
+into hands-on security work through a structured cybersecurity training
+program. This project is where that transition shows up directly: the
+investigation itself, and the discipline of verifying every claim rather
+than trusting it on its face.
 
-## The scenario
+## The engagement
 
-A legacy Ubuntu server (`legacyserver`) supporting an internal application
-triggered anomalous traffic alerts. As the responding analyst, I built an
+A legacy Ubuntu server (hostname `legacyserver`) running a deliberately
+vulnerable configuration triggered anomalous traffic alerts in a
+simulated SOC scenario. Acting as the responding analyst, I built an
 isolated lab, investigated the breach, contained it without destroying
 evidence, eradicated the root cause, and hardened the system against
-recurrence — then documented the findings as both a technical report and
-an automated verification script.
+recurrence — then documented the findings as a formal technical report
+with an automated verification script.
 
 ## Key findings
 
 | Finding | Detail |
 |---|---|
-| **Unauthenticated root bindshell** | Port 1524 ran an `inetd`-spawned root shell — no authentication, no exploit required. |
+| **Unauthenticated root bindshell** | Port 1524 ran a root shell via an `inetd` service entry — no authentication, no exploit required. |
 | **Backdoored FTP service** | vsftpd matching the known-malicious 2.3.4 build (CVE-2011-2523, CVSS 9.8) — verified against NIST NVD, not taken on AI output alone. |
 | **30 open ports** on a single host, including legacy/unencrypted services (telnet, plain FTP), an exposed build service (distcc), outdated Samba, and two unsupported databases. |
-| **Surgical containment** | Blocked the two critical listeners with host firewall rules and process termination — without powering off the VM or destroying volatile evidence. |
-| **Permanent remediation** | Removed the backdoor's `inetd` persistence mechanism and disabled four additional legacy remote-access services as defense-in-depth hardening. |
-| **Automated verification** | Wrote and ran a Bash health-check script (`scripts/health_check.sh`) to confirm the fix holds. |
+| **Surgical containment** | Blocked the two most critical listeners with host firewall rules and process termination — without powering off the host or destroying volatile evidence. |
+| **Permanent remediation** | Removed the backdoor's `inetd` persistence mechanism, stopped and disabled Samba and distccd at the service level, and hardened four additional legacy remote-access services. |
+| **Automated verification** | Wrote and ran a Bash health-check script (`scripts/health_check.sh`) to confirm the fixes hold. |
 
 ## AI as a force multiplier — with verification
 
@@ -44,28 +45,27 @@ Generative AI was used throughout as a research and drafting assistant,
 under a strict rule: **every AI-sourced claim had to be independently
 verified** before it went in the report.
 
-A concrete example from this project: an AI assistant returned a
-threat-intelligence table that included a CVSS score for a Samba
-vulnerability. Rather than citing that score directly, I cross-referenced
-every CVE against the NIST National Vulnerability Database, recording
-the actual published date and CVSS vector for each one, and treated any
-mismatch as a "failed verification" worth flagging in the report rather
-than silently correcting. That discipline — using AI to move faster
-without trusting it as ground truth — is the main process point of this
-project.
+A concrete example from this investigation: an AI assistant returned a
+threat-intelligence profile that included a CVSS score of 8.5 for a
+Samba vulnerability (CVE-2007-2447). Cross-referencing that score against
+the NIST National Vulnerability Database turned up a different number —
+NVD's own CVSS v2.0 score for that CVE is 6.0. Rather than quietly using
+whichever number looked better, the discrepancy was logged in the report
+as a **Failed Verification**, and the lower, authoritative score was the
+one used going forward. That's the actual behavior this project is built
+around: using AI to move faster without treating it as ground truth.
 
 ## Repository structure
 
 ```
-legacy-server-breach-investigation/
+Incident_Response_Investigation/
 ├── README.md
-├── docs/                          # Phase-by-phase incident report
-│   ├── Phase_1_Prepare.pdf
-│   ├── Phase_2_Detect_Analyze.pdf
-│   ├── Phase_3_Contain.pdf
-│   ├── Phase_4_Eradicate_Recover.pdf
-│   └── Phase_5_Report_Present.pdf
-├── evidence/                      # Annotated screenshots per phase
+├── docs/                          # Section-by-section incident report
+│   ├── Section_1_Preparation.pdf
+│   ├── Section_2_Detection_Analysis.pdf
+│   ├── Section_3_Containment.pdf
+│   └── Section_4_Eradication_Recovery.pdf
+├── evidence/                      # Annotated screenshots, by section
 │   └── ...
 ├── scripts/
 │   └── health_check.sh            # Automated post-remediation verification
@@ -75,11 +75,11 @@ legacy-server-breach-investigation/
 
 ## Skills demonstrated
 
-- Network segmentation and isolated lab design (VirtualBox/UTM)
+- Network segmentation and isolated lab design (UTM/QEMU)
 - Reconnaissance and service enumeration (`nmap`, NSE scripts)
-- Vulnerability research and CVE/CVSS verification against NVD/MITRE
+- Vulnerability research and CVE/CVSS verification against NVD
 - Incident containment with evidence preservation (order of volatility)
-- Linux system hardening (`inetd`, `iptables`, service minimization)
+- Linux system hardening (`inetd`, `iptables`, service minimization, `update-rc.d`)
 - Bash scripting for automated security verification
 - Technical documentation and incident reporting
 - Disciplined, verification-first use of AI tooling
@@ -87,12 +87,12 @@ legacy-server-breach-investigation/
 ## Lab note
 
 This investigation was performed entirely inside an isolated virtual lab
-using intentionally vulnerable training VMs. No production systems, real organizations, or
-real-world targets were involved. The lab network was later rebuilt on an
-isolated virtual network (from an initial bridged configuration) to
-properly segment it from the host network — a correction made and
-documented during the project itself.
+using intentionally vulnerable training VMs. No production systems, real
+organizations, or real-world targets were involved. The lab network was
+later rebuilt on a properly isolated virtual network — a correction made
+and documented during the investigation itself, after an initial
+configuration briefly bridged the lab onto the host's own network.
 
 ## Contact
 
-Kristopher Neumann — www.linkedin.com/in/krisneumann · krisgneumann@gmail.com
+Kristopher Neumann — [LinkedIn] · [email]
