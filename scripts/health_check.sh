@@ -1,27 +1,26 @@
 #!/bin/bash
 #
 # health_check.sh
-# SOC Automated Health Check — Legacy Server Breach Investigation
+# Automated Health Check — Incident Response Investigation: The Legacy Server Breach
 #
 # Verifies that the services remediated during the incident response
-# (vsftpd backdoor, root bindshell, and unnecessary rsh-family/telnet
-# services) remain closed or filtered after hardening.
+# (vsftpd backdoor, root bindshell, unnecessary rsh-family/telnet services,
+# Samba, distccd, and UnrealIRCd) remain closed after remediation.
 #
-# Author: Kris Neumann
-# Project: Cap 195 Capstone — The Legacy Server Breach
+# Author: Kristopher Neumann
 #
 # Usage:
 #   ./health_check.sh [target_ip]
 #   If no target_ip is given, defaults to the value below.
 
-TARGET_IP="${1:-192.168.x.x}"
-CRITICAL_PORTS=(21 23 512 513 514 1524)
+TARGET_IP="${1:-192.168.1.207}"
+CRITICAL_PORTS=(21 23 512 513 514 1524 139 445 3632 6667 6697)
 TIMEOUT=2
 FAILED_CHECKS=0
 
 echo "=============================================="
-echo " SOC AUTOMATED HEALTH CHECK AUDIT | Target: ${TARGET_IP}"
-echo " Analyst: Kris Neumann | Workstation: soc-analyst-vm"
+echo " AUTOMATED HEALTH CHECK AUDIT | Target: ${TARGET_IP}"
+echo " Analyst: Kristopher Neumann | Workstation: soc-analyst-vm"
 echo " Timestamp: $(date)"
 echo "=============================================="
 
