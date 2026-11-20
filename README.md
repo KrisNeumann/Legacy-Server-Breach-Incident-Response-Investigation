@@ -46,6 +46,97 @@ with an automated verification script.
 | **Permanent remediation** | Removed the backdoor's `inetd` persistence mechanism, stopped and disabled Samba and distccd at the service level, and hardened four additional legacy remote-access services. |
 | **Automated verification** | Wrote and ran a Bash health-check script (`scripts/health_check.sh`) to confirm the fixes hold. |
 
+## Remediation & verification
+
+A sample of the actual commands run against the target during eradication, pulled directly from
+the report (full sequence, including containment firewall rules and attack-surface reduction, is
+in [`docs/Section_3_Containment.pdf`](docs/Section_3_Containment.pdf) and
+[`docs/Section_4_Eradication_Recovery.pdf`](docs/Section_4_Eradication_Recovery.pdf)):
+
+```bash
+# Permanently disable the backdoored FTP service and root bindshell (both launched via inetd)
+sed -i '/ftp/s/^/#/' /etc/inetd.conf
+sed -i '/ingreslock/s/^/#/' /etc/inetd.conf
+sed -i '/1524/s/^/#/' /etc/inetd.conf
+killall -9 vsftpd 2>/dev/null
+/etc/init.d/openbsd-inetd restart
+
+# Stop and disable Samba, distccd, and UnrealIRCd (standalone daemons, not inetd-launched)
+/etc/init.d/samba stop && update-rc.d -f samba remove
+/etc/init.d/distcc stop && update-rc.d -f distcc remove
+pkill -f unrealircd && update-rc.d -f unrealircd remove
+```
+
+### Automated port verification (`scripts/health_check.sh`)
+
+<details>
+<summary>View script</summary>
+
+```bash
+#!/bin/bash
+#
+# health_check.sh
+# Automated Health Check — Incident Response Investigation: The Legacy Server Breach
+#
+# Verifies that the services remediated during the incident response
+# (vsftpd backdoor, root bindshell, unnecessary rsh-family/telnet services,
+# Samba, distccd, and UnrealIRCd) remain closed after remediation.
+#
+# Author: Kristopher Neumann
+#
+# Usage:
+#   ./health_check.sh [target_ip]
+#   If no target_ip is given, defaults to the value below.
+
+TARGET_IP="${1:-192.168.1.207}"
+CRITICAL_PORTS=(21 23 512 513 514 1524 139 445 3632 6667 6697)
+TIMEOUT=2
+FAILED_CHECKS=0
+
+echo "=============================================="
+echo " AUTOMATED HEALTH CHECK AUDIT | Target: ${TARGET_IP}"
+echo " Analyst: Kristopher Neumann | Workstation: soc-analyst-vm"
+echo " Timestamp: $(date)"
+echo "=============================================="
+
+echo -n "[*] Auditing System Availability (ICMP Ping)... "
+if ping -c 2 -W 2 "${TARGET_IP}" > /dev/null 2>&1; then
+    echo "[ONLINE]"
+else
+    echo "[CRITICAL: HOST UNREACHABLE]"
+    exit 1
+fi
+
+echo ""
+echo "[*] Auditing Neutralized & Hardened Port Boundaries:"
+echo "----------------------------------------------"
+
+for PORT in "${CRITICAL_PORTS[@]}"; do
+    nc -z -w "${TIMEOUT}" "${TARGET_IP}" "${PORT}" > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        echo "[-] ALERT: TCP Port ${PORT} is OPEN! [VULNERABLE / UNHARDENED]"
+        FAILED_CHECKS=$((FAILED_CHECKS + 1))
+    else
+        echo "[+] VERIFIED: TCP Port ${PORT} is CLOSED/DROPPED. [SECURE]"
+    fi
+done
+
+echo "----------------------------------------------"
+if [ ${FAILED_CHECKS} -eq 0 ]; then
+    echo "[RESULT: SECURE] Target ${TARGET_IP} successfully passed all validation checks."
+    exit 0
+else
+    echo "[RESULT: NON-COMPLIANT] ${FAILED_CHECKS} unauthorized services detected!"
+    exit 1
+fi
+```
+
+</details>
+
+Actual run against the target, confirming every remediated port is closed:
+
+<img src="evidence/12_Health_Check_Results.png" width="700" alt="health_check.sh output showing all ports CLOSED/DROPPED and RESULT: SECURE">
+
 ## From findings to risk — the GRC layer
 
 Sections 1–4 document what was wrong and how each finding was fixed.
@@ -73,11 +164,11 @@ per-finding patch.
 
 **Vulnerability matrix** (every finding, CVE/CVSS, and the control gap it maps to):
 
-![Vulnerability matrix](evidence/13_Vulnerability_Matrix_Summary.png)
+<img src="evidence/13_Vulnerability_Matrix_Summary.png" width="820" alt="Vulnerability matrix">
 
 **Risk register** (likelihood × impact, owner, treatment, residual risk):
 
-![Risk register](evidence/14_Risk_Register_Summary.png)
+<img src="evidence/14_Risk_Register_Summary.png" width="820" alt="Risk register">
 
 Full writeup: [`docs/Section_5_Post_Incident_Review.pdf`](docs/Section_5_Post_Incident_Review.pdf).
 
@@ -167,4 +258,4 @@ configuration briefly bridged the lab onto the host's own network.
 
 ## Contact
 
-Kristopher Neumann — www.linkedin.com/in/krisneumann
+Kristopher Neumann — www.linkedin.com/in/krisneumann — krisgneumann@gmail.com
