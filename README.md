@@ -4,10 +4,12 @@
 
 A structured incident-response investigation of a deliberately vulnerable
 legacy Ubuntu server, conducted end-to-end in an isolated virtual lab
-across four phases of the incident response lifecycle: **Preparation →
-Detection & Analysis → Containment → Eradication & Recovery**. Every
-technical finding was verified against authoritative sources before being
-treated as fact, including findings sourced from AI-assisted research.
+across the incident response lifecycle: **Preparation → Detection &
+Analysis → Containment → Eradication & Recovery → Post-Incident Review**.
+Every technical finding was verified against authoritative sources before
+being treated as fact, including findings sourced from AI-assisted
+research, and every finding was mapped to NIST, CIS, and ISO 27001
+controls with a risk rating and an owner.
 
 ## Why this project
 
@@ -39,6 +41,32 @@ with an automated verification script.
 | **Permanent remediation** | Removed the backdoor's `inetd` persistence mechanism, stopped and disabled Samba and distccd at the service level, and hardened four additional legacy remote-access services. |
 | **Automated verification** | Wrote and ran a Bash health-check script (`scripts/health_check.sh`) to confirm the fixes hold. |
 
+## From findings to risk — the GRC layer
+
+The technical investigation (Sections 1-4) answers "what was wrong and how
+was it fixed." Section 5 answers the question a GRC-focused reader
+actually asks: what control failures let this happen, and what's the
+systemic fix — not just the per-finding one.
+
+- **Framework mapping** — every finding is mapped to NIST CSF 2.0, NIST
+  SP 800-53 Rev 5, CIS Controls v8, and ISO/IEC 27001:2022 Annex A. The
+  mapping shows the six findings aren't six unrelated problems — they
+  trace back to two recurring control gaps (secure configuration/least
+  functionality, and vulnerability/flaw remediation).
+- **Risk register** — each finding scored by likelihood and impact, rated
+  from Medium to Critical before remediation, with an assigned risk
+  owner and treatment decision, down to a verified Low residual risk.
+- **Root-cause / policy gap analysis** — four process-level failures
+  (no patch management program, no asset inventory, no hardening
+  baseline, no change management review) that explain why all six
+  findings existed on the same host at once.
+- **Post-incident review** — a lessons-learned pass on the investigation
+  process itself, including a process gap it catches in its own earlier
+  work: UnrealIRCd's remediation was initially incomplete (terminated
+  but not disabled at boot) until a follow-up step closed it.
+
+Full writeup: [`docs/Section_5_Post_Incident_Review.pdf`](docs/Section_5_Post_Incident_Review.pdf).
+
 ## AI as a force multiplier — with verification
 
 Generative AI was used throughout as a research and drafting assistant,
@@ -64,7 +92,8 @@ Incident_Response_Investigation/
 │   ├── Section_1_Preparation.pdf
 │   ├── Section_2_Detection_Analysis.pdf
 │   ├── Section_3_Containment.pdf
-│   └── Section_4_Eradication_Recovery.pdf
+│   ├── Section_4_Eradication_Recovery.pdf
+│   └── Section_5_Post_Incident_Review.pdf
 ├── evidence/                      # Annotated screenshots, by section
 │   └── ...
 ├── scripts/
@@ -83,6 +112,10 @@ Incident_Response_Investigation/
 - Bash scripting for automated security verification
 - Technical documentation and incident reporting
 - Disciplined, verification-first use of AI tooling
+- Control framework mapping (NIST CSF 2.0, NIST SP 800-53, CIS Controls v8, ISO/IEC 27001:2022)
+- Risk assessment and risk register development (likelihood/impact scoring, ownership, treatment)
+- Root-cause and policy/control gap analysis
+- Post-incident review per NIST SP 800-61 Rev. 2
 
 ## Lab note
 
