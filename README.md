@@ -11,6 +11,11 @@ being treated as fact, including findings sourced from AI-assisted
 research, and every finding was mapped to NIST, CIS, and ISO 27001
 controls with a risk rating and an owner.
 
+[![Status](https://img.shields.io/badge/Status-Remediated%20%26%20Hardened-brightgreen.svg)]()
+[![Scope](https://img.shields.io/badge/Scope-Lab--Based%20IR%20Investigation-blue.svg)]()
+[![Target OS](https://img.shields.io/badge/Target%20OS-Ubuntu%20Linux-orange.svg)]()
+[![Frameworks](https://img.shields.io/badge/Frameworks-NIST%20800--61%20%7C%20CSF%202.0%20%7C%20CIS%20v8%20%7C%20ISO%2027001-lightgrey.svg)]()
+
 ## Why this project
 
 I spent several years in technical recruiting, evaluating engineers and
@@ -43,10 +48,11 @@ with an automated verification script.
 
 ## From findings to risk — the GRC layer
 
-The technical investigation (Sections 1-4) answers "what was wrong and how
-was it fixed." Section 5 answers the question a GRC-focused reader
-actually asks: what control failures let this happen, and what's the
-systemic fix — not just the per-finding one.
+Sections 1–4 document what was wrong and how each finding was fixed.
+Section 5 goes one level up: it maps every finding to formal control
+frameworks, scores risk, and traces the root cause back to the process
+gaps that let six vulnerabilities coexist on one host — not just the
+per-finding patch.
 
 - **Framework mapping** — every finding is mapped to NIST CSF 2.0, NIST
   SP 800-53 Rev 5, CIS Controls v8, and ISO/IEC 27001:2022 Annex A. The
@@ -65,6 +71,14 @@ systemic fix — not just the per-finding one.
   work: UnrealIRCd's remediation was initially incomplete (terminated
   but not disabled at boot) until a follow-up step closed it.
 
+**Vulnerability matrix** (every finding, CVE/CVSS, and the control gap it maps to):
+
+![Vulnerability matrix](evidence/13_Vulnerability_Matrix_Summary.png)
+
+**Risk register** (likelihood × impact, owner, treatment, residual risk):
+
+![Risk register](evidence/14_Risk_Register_Summary.png)
+
 Full writeup: [`docs/Section_5_Post_Incident_Review.pdf`](docs/Section_5_Post_Incident_Review.pdf).
 
 ## AI as a force multiplier — with verification
@@ -82,6 +96,31 @@ whichever number looked better, the discrepancy was logged in the report
 as a **Failed Verification**, and the lower, authoritative score was the
 one used going forward. That's the actual behavior this project is built
 around: using AI to move faster without treating it as ground truth.
+
+## Lessons learned
+
+CompTIA's incident response model names this final step **Lessons
+Learned**; this project documents the same step as **Post-Incident
+Review** (Section 5), following NIST SP 800-61 Rev. 2's grouping of
+detection/analysis and eradication/recovery into combined phases rather
+than CompTIA's seven discrete steps — same step, different framework's
+label.
+
+- **Persistence checks need to be explicit, not assumed.** UnrealIRCd
+  was initially stopped with `pkill`, which looked complete from a
+  running-process check — but it was still re-registered to launch at
+  boot. The gap wasn't caught until a dedicated persistence check, and
+  was then closed with `update-rc.d`. Every eradicated service now gets
+  a boot-persistence check, not just a process check.
+- **AI output needs independent verification, every time.** An
+  AI-sourced CVSS score for a Samba CVE (8.5) didn't match NVD's
+  authoritative score (6.0) for the same CVE. The discrepancy was
+  logged rather than silently corrected, and the authoritative figure
+  is the one used in the report.
+- **Lab isolation needs to be verified, not configured once and
+  trusted.** An early network configuration briefly bridged the lab
+  onto the host's own network; this was caught and the lab was rebuilt
+  on a properly isolated virtual network before continuing.
 
 ## Repository structure
 
