@@ -253,8 +253,7 @@ This investigation was performed entirely inside an isolated virtual lab
 using intentionally vulnerable training VMs. No production systems, real
 organizations, or real-world targets were involved. The lab network was
 later rebuilt on a properly isolated virtual network — a correction made
-and documented during the investigation itself, after an initial
-configuration briefly bridged the lab onto the host's own network.
+and documented during the investigation itself.
 
 ## Contact
 
