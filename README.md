@@ -176,7 +176,8 @@ per-finding patch.
 
 ![Risk register](evidence/14_Risk_Register_Summary.png)
 
-Full writeup: [`docs/Section_5_Post_Incident_Review.pdf`](docs/Section_5_Post_Incident_Review.pdf).
+Full writeup: [docs/Section_5_Post_Incident_Review.pdf](docs/Section_5_Post_Incident_Review.pdf) | Machine-readable register: [docs/risk_register.csv](docs/risk_register.csv)
+
 
 ## AI as a force multiplier — with verification
 
