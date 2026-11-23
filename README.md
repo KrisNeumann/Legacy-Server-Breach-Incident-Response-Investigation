@@ -16,6 +16,12 @@ controls with a risk rating and an owner.
 [![Target OS](https://img.shields.io/badge/Target%20OS-Ubuntu%20Linux-orange.svg)]()
 [![Frameworks](https://img.shields.io/badge/Frameworks-NIST%20800--61%20%7C%20CSF%202.0%20%7C%20CIS%20v8%20%7C%20ISO%2027001-lightgrey.svg)]()
 
+## Executive summary
+
+Incident trigger & scope: Anomalous traffic alerts on legacyserver (Ubuntu) in an isolated lab environment; 30 exposed ports identified, including two critical remote-access entry points (an unauthenticated root bindshell on port 1524 and a backdoored vsftpd 2.3.4 service).
+Containment & eradication: Live containment performed without power-cycling (preserving volatile evidence), followed by permanent removal of backdoor persistence (inetd), legacy services, and unnecessary daemons.
+Risk & governance outcome: All findings mapped to NIST CSF 2.0, SP 800-53, CIS Controls v8, and ISO 27001, reducing overall host risk from Critical to Low, verified via an automated Bash health check (health_check.sh).
+
 ## Why this project
 
 I spent several years in technical recruiting, evaluating engineers and
