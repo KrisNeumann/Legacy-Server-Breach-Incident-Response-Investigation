@@ -220,17 +220,16 @@ label.
   onto the host's own network; this was caught and the lab was rebuilt
   on a properly isolated virtual network before continuing.
 
-## Repository structure
-
-```
+```text
 Incident_Response_Investigation/
 ├── README.md
-├── docs/                          # Section-by-section incident report
+├── docs/                          # Section-by-section incident report & GRC register
 │   ├── Section_1_Preparation.pdf
 │   ├── Section_2_Detection_Analysis.pdf
 │   ├── Section_3_Containment.pdf
 │   ├── Section_4_Eradication_Recovery.pdf
-│   └── Section_5_Post_Incident_Review.pdf
+│   ├── Section_5_Post_Incident_Review.pdf
+│   └── risk_register.csv
 ├── evidence/                      # Annotated screenshots, by section
 │   └── ...
 ├── scripts/
