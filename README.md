@@ -18,9 +18,10 @@ controls with a risk rating and an owner.
 
 ## Executive summary
 
-- **Incident trigger & scope:** Anomalous traffic alerts on `legacyserver` (Ubuntu) in an isolated lab environment; 30 exposed ports identified, including two critical remote-access entry points (an unauthenticated root bindshell on port 1524 and a backdoored `vsftpd 2.3.4` service).
-- **Containment & eradication:** Live containment performed without power-cycling (preserving volatile evidence), followed by permanent removal of backdoor persistence (`inetd`), legacy services, and unnecessary daemons.
-- **Risk & governance outcome:** All findings mapped to NIST CSF 2.0, SP 800-53, CIS Controls v8, and ISO 27001, reducing overall host risk from **Critical** to **Low**, verified via an automated Bash health check (`scripts/health_check.sh`).
+* **Business & risk outcome:** Remediated six critical-to-medium host exposures across an unmanaged legacy Ubuntu server, reducing overall residual risk from **Critical** to **Low** and mapping all findings to **NIST CSF 2.0, SP 800-53 Rev 5, CIS Controls v8, and ISO/IEC 27001:2022**.
+* **Root-cause governance gaps:** Traced all six technical vulnerabilities back to four systemic policy failures—absence of patch management, asset inventory, hardening baselines, and change management—and delivered a prioritized **Risk Register** (`docs/risk_register.csv`) with assigned owners and SLAs.
+* **Technical containment & verification:** Performed live incident containment without destroying volatile evidence (`iptables`, service isolation), eradicated backdoor persistence (`vsftpd 2.3.4`, port `1524` bindshell), and built an automated Bash verification audit (`scripts/health_check.sh`) to prove control effectiveness.
+* **Disciplined AI governance:** Enforced a strict independent-verification rule for all AI-assisted threat research—catching and logging a hallucinated CVSS score (`8.5` vs. NVD's authoritative `6.0` on `CVE-2007-2447`) before reporting.
 
 ## Why this project
 
@@ -51,6 +52,41 @@ with an automated verification script.
 | **Surgical containment** | Blocked the two most critical listeners with host firewall rules and process termination — without powering off the host or destroying volatile evidence. |
 | **Permanent remediation** | Removed the backdoor's `inetd` persistence mechanism, stopped and disabled Samba and distccd at the service level, and hardened four additional legacy remote-access services. |
 | **Automated verification** | Wrote and ran a Bash health-check script (`scripts/health_check.sh`) to confirm the fixes hold. |
+
+## From findings to risk — the GRC layer
+
+Sections 1–4 document what was wrong and how each finding was fixed.
+Section 5 goes one level up: it maps every finding to formal control
+frameworks, scores risk, and traces the root cause back to the process
+gaps that let six vulnerabilities coexist on one host — not just the
+per-finding patch.
+
+- **Framework mapping** — every finding is mapped to NIST CSF 2.0, NIST
+  SP 800-53 Rev 5, CIS Controls v8, and ISO/IEC 27001:2022 Annex A. The
+  mapping shows the six findings aren't six unrelated problems — they
+  trace back to two recurring control gaps (secure configuration/least
+  functionality, and vulnerability/flaw remediation).
+- **Risk register** — each finding scored by likelihood and impact, rated
+  from Medium to Critical before remediation, with an assigned risk
+  owner and treatment decision, down to a verified Low residual risk.
+- **Root-cause / policy gap analysis** — four process-level failures
+  (no patch management program, no asset inventory, no hardening
+  baseline, no change management review) that explain why all six
+  findings existed on the same host at once.
+- **Post-incident review** — a lessons-learned pass on the investigation
+  process itself, including a process gap it catches in its own earlier
+  work: UnrealIRCd's remediation was initially incomplete (terminated
+  but not disabled at boot) until a follow-up step closed it.
+
+**Vulnerability matrix** (every finding, CVE/CVSS, and the control gap it maps to):
+
+![Vulnerability matrix](evidence/13_Vulnerability_Matrix_Summary.png)
+
+**Risk register** (likelihood × impact, owner, treatment, residual risk):
+
+![Risk register](evidence/14_Risk_Register_Summary.png)
+
+Full writeup: [docs/Section_5_Post_Incident_Review.pdf](docs/Section_5_Post_Incident_Review.pdf) | Machine-readable register: [docs/risk_register.csv](docs/risk_register.csv)
 
 ## Remediation & verification
 
@@ -142,42 +178,6 @@ fi
 Actual run against the target, confirming every remediated port is closed:
 
 <img src="evidence/12_Health_Check_Results.png" width="700" alt="health_check.sh output showing all ports CLOSED/DROPPED and RESULT: SECURE">
-
-## From findings to risk — the GRC layer
-
-Sections 1–4 document what was wrong and how each finding was fixed.
-Section 5 goes one level up: it maps every finding to formal control
-frameworks, scores risk, and traces the root cause back to the process
-gaps that let six vulnerabilities coexist on one host — not just the
-per-finding patch.
-
-- **Framework mapping** — every finding is mapped to NIST CSF 2.0, NIST
-  SP 800-53 Rev 5, CIS Controls v8, and ISO/IEC 27001:2022 Annex A. The
-  mapping shows the six findings aren't six unrelated problems — they
-  trace back to two recurring control gaps (secure configuration/least
-  functionality, and vulnerability/flaw remediation).
-- **Risk register** — each finding scored by likelihood and impact, rated
-  from Medium to Critical before remediation, with an assigned risk
-  owner and treatment decision, down to a verified Low residual risk.
-- **Root-cause / policy gap analysis** — four process-level failures
-  (no patch management program, no asset inventory, no hardening
-  baseline, no change management review) that explain why all six
-  findings existed on the same host at once.
-- **Post-incident review** — a lessons-learned pass on the investigation
-  process itself, including a process gap it catches in its own earlier
-  work: UnrealIRCd's remediation was initially incomplete (terminated
-  but not disabled at boot) until a follow-up step closed it.
-
-**Vulnerability matrix** (every finding, CVE/CVSS, and the control gap it maps to):
-
-![Vulnerability matrix](evidence/13_Vulnerability_Matrix_Summary.png)
-
-**Risk register** (likelihood × impact, owner, treatment, residual risk):
-
-![Risk register](evidence/14_Risk_Register_Summary.png)
-
-Full writeup: [docs/Section_5_Post_Incident_Review.pdf](docs/Section_5_Post_Incident_Review.pdf) | Machine-readable register: [docs/risk_register.csv](docs/risk_register.csv)
-
 
 ## AI as a force multiplier — with verification
 
