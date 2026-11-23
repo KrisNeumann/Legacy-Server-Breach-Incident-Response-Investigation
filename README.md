@@ -19,7 +19,7 @@ controls with a risk rating and an owner.
 ## Executive summary
 
 * **Business & risk outcome:** Remediated six critical-to-medium host exposures across an unmanaged legacy Ubuntu server, reducing overall residual risk from **Critical** to **Low** and mapping all findings to **NIST CSF 2.0, SP 800-53 Rev 5, CIS Controls v8, and ISO/IEC 27001:2022**.
-* **Root-cause governance gaps:** Traced all six technical vulnerabilities back to four systemic policy failures—absence of patch management, asset inventory, hardening baselines, and change management—and delivered a prioritized **Risk Register** (`docs/risk_register.csv`) with assigned owners and SLAs.
+* **Root-cause governance gaps:** Traced all six technical vulnerabilities back to four systemic policy failures—absence of patch management, asset inventory, hardening baselines, and change management—and delivered a prioritized **Risk Register** (`docs/risk_register.csv`) with assigned owners.
 * **Technical containment & verification:** Performed live incident containment without destroying volatile evidence (`iptables`, service isolation), eradicated backdoor persistence (`vsftpd 2.3.4`, port `1524` bindshell), and built an automated Bash verification audit (`scripts/health_check.sh`) to prove control effectiveness.
 * **Disciplined AI governance:** Enforced a strict independent-verification rule for all AI-assisted threat research—catching and logging a hallucinated CVSS score (`8.5` vs. NVD's authoritative `6.0` on `CVE-2007-2447`) before reporting.
 
